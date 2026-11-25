@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102b36"><title>Ivrit Daily | עברית יומית</title><style>
+:root{color-scheme:light;--ink:#18333d;--muted:#62767b;--accent:#087f78;--bg:#f0f5f4;--line:#dce7e5}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}main{max-width:780px;margin:auto;padding:24px 16px 48px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}h1{font-size:25px;margin:0}h2{font-size:20px;margin:0 0 12px}small,.muted{color:var(--muted)}.brand{font-size:13px;letter-spacing:2px;color:var(--accent);font-weight:750}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}.stat,.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:16px}.stat strong{display:block;font-size:26px}.stat small{font-size:12px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}button,select,input{font:inherit;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);padding:11px 13px}button{cursor:pointer;font-weight:650}button:hover{border-color:var(--accent)}button:focus-visible,select:focus-visible{outline:3px solid #72c9c0}.primary{background:var(--accent);color:white;border-color:var(--accent)}.tabs button.active{background:var(--ink);color:white}.tabs{display:flex;gap:7px}.tabs button{flex:1}.bar{height:6px;background:#e4eeec;border-radius:8px;overflow:hidden}.bar div{height:100%;background:var(--accent);transition:width .2s}.flash{min-height:310px;display:flex;flex-direction:column;text-align:center;justify-content:center;align-items:center;gap:17px;padding:28px 18px;cursor:pointer}.sentence{font-size:clamp(24px,5vw,36px);line-height:1.5;font-weight:650;overflow-wrap:anywhere}.he{font-family:Arial,sans-serif;direction:rtl}.answer{font-size:clamp(20px,4vw,28px);line-height:1.5}.word{color:var(--accent);font-weight:700;background:#e9f6f3;padding:7px 12px;border-radius:8px}.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1;min-height:52px}.again{color:#b74739}.good{color:#087f78}.easy{color:#3459a1}.hidden{display:none!important}.listrow{padding:14px 0;border-bottom:1px solid var(--line)}.listrow .he{font-size:22px;text-align:right}.listrow .muted{font-size:14px}#search{width:100%;margin:10px 0}.footer{font-size:13px;color:var(--muted);line-height:1.6;margin-top:18px}#notice{font-size:13px;color:#a04b24}button:disabled{opacity:.45;cursor:default}@media(max-width:480px){main{padding:16px 12px}.stat{padding:12px}.stat strong{font-size:23px}.flash{min-height:300px}.controls select{max-width:100%}header{align-items:flex-start}.tabs button{font-size:14px;padding:10px 6px}}
+</style></head><body><main><header><div><div class="brand">IVRIT DAILY</div><h1>עברית יומית <span style="font-size:16px;font-weight:400">· Hebrew daily</span></h1><small>Learn real Hebrew, one sentence at a time.</small></div><button id="sound" title="Hear the Hebrew sentence">🔊 Audio</button></header><div class="stats"><div class="stat"><strong id="total">0</strong><small>Sentences</small></div><div class="stat"><strong id="due">0</strong><small>Due in selection</small></div><div class="stat"><strong id="mastered">0</strong><small>Mastered (21+ days)</small></div></div><nav class="tabs"><button data-tab="study" class="active">Study</button><button data-tab="library">Vocabulary</button><button data-tab="settings">Progress</button></nav><section id="study"><div class="controls"><select id="category" aria-label="Topic"></select><select id="direction" aria-label="Translation direction"><option value="en">English → Hebrew</option><option value="he">Hebrew → English</option><option value="mix">Mixed</option></select><select id="mode" aria-label="Study mode"><option value="due">Due & new</option><option value="all">All cards</option></select></div><div class="bar"><div id="bar"></div></div><p class="muted" id="counter"></p><div class="panel flash" id="flash" role="button" tabindex="0" aria-label="Reveal translation"><small id="prompt"></small><div id="front" class="sentence"></div><div id="answer" class="answer hidden"></div><div id="word" class="word hidden"></div><small id="hint">Tap to reveal · Space</small></div><div class="actions" id="revealRow"><button class="primary" id="reveal">Show answer</button><button id="skip">Skip</button></div><div class="actions hidden" id="ratings"><button class="again" data-rate="0">Again<br><small>1 min</small></button><button class="good" data-rate="1">Good<br><small id="goodTime">1 day</small></button><button class="easy" data-rate="2">Easy<br><small id="easyTime">4 days</small></button></div><p id="notice" role="status"></p></section><section id="library" class="hidden"><input id="search" placeholder="Search English or Hebrew…" aria-label="Search vocabulary"><div class="panel" id="entries"></div></section><section id="settings" class="hidden"><div class="panel" style="margin-top:16px"><h2>Your progress</h2><p id="progressText"></p><p class="muted">Reviews are stored in this browser. Export a backup to move your progress between devices.</p><div class="controls"><button id="export">Export progress</button><button id="import">Import progress</button><input type="file" id="file" accept="application/json" class="hidden"><button id="reset">Reset progress</button></div></div></section><div class="footer">Modern Israeli Hebrew · Masculine first-person forms where relevant. Audio requires a Hebrew voice supported by your browser/device. Keyboard: Space = reveal, 1/2/3 = rate, S = skip.</div></main><script>
+const raw=`
+Everyday|I prefer to stay home today.|אני מעדיף להישאר בבית היום.|להעדיף — to prefer
+Everyday|It depends on the situation.|זה תלוי במצב.|תלוי — depends
+Everyday|I haven't decided yet.|עדיין לא החלטתי.|להחליט — to decide
+Everyday|We need to find a solution.|אנחנו צריכים למצוא פתרון.|פתרון — solution
+Everyday|I don't agree with that approach.|אני לא מסכים עם הגישה הזאת.|גישה — approach
+Everyday|What exactly do you mean?|למה בדיוק אתה מתכוון?|להתכוון — to mean / intend
+Israel life|I intend to move to Israel.|אני מתכוון לעבור לישראל.|לעבור — to move
+Everyday|It's worth checking in advance.|כדאי לבדוק מראש.|מראש — in advance
+Everyday|I got used to it over time.|התרגלתי לזה עם הזמן.|להתרגל — to get used to
+Everyday|I'm trying to improve my Hebrew.|אני מנסה לשפר את העברית שלי.|לשפר — to improve
+Connectors|Despite the difficulties, we succeeded.|למרות הקשיים, הצלחנו.|למרות — despite
+Everyday|I appreciate your help.|אני מעריך את העזרה שלך.|להעריך — to appreciate
+Everyday|There is no need to worry.|אין צורך לדאוג.|לדאוג — to worry
+Everyday|I realized I had made a mistake.|הבנתי שעשיתי טעות.|להבין — to understand
+Business|What are the advantages and disadvantages?|מה היתרונות והחסרונות?|יתרון / חיסרון — advantage / disadvantage
+Business|We need to take that into account.|אנחנו צריכים לקחת את זה בחשבון.|לקחת בחשבון — to take into account
+Business|I'm looking for a new opportunity.|אני מחפש הזדמנות חדשה.|הזדמנות — opportunity
+Business|I'm responsible for this project.|אני אחראי על הפרויקט הזה.|אחראי — responsible
+Everyday|I'm not sure it's possible.|אני לא בטוח שזה אפשרי.|אפשרי — possible
+Connectors|Ultimately, it's a matter of priorities.|בסופו של דבר, זה עניין של סדרי עדיפויות.|סדרי עדיפויות — priorities
+Everyday|Can you explain that again?|אתה יכול להסביר את זה שוב?|להסביר — to explain
+Everyday|I forgot to bring my keys.|שכחתי להביא את המפתחות שלי.|לשכוח — to forget
+Everyday|Remind me to call him tomorrow.|תזכיר לי להתקשר אליו מחר.|להזכיר — to remind
+Everyday|I noticed something strange.|שמתי לב למשהו מוזר.|לשים לב — to notice
+Everyday|I managed to finish on time.|הצלחתי לסיים בזמן.|להצליח — to succeed
+Everyday|I couldn't help laughing.|לא יכולתי שלא לצחוק.|לצחוק — to laugh
+Everyday|I feel like going for a walk.|בא לי לצאת להליכה.|בא לי — I feel like
+Everyday|I'm looking forward to seeing you.|אני מחכה בקוצר רוח לראות אותך.|בקוצר רוח — eagerly
+Everyday|I didn't expect that to happen.|לא ציפיתי שזה יקרה.|לצפות — to expect
+Everyday|Can we postpone the meeting?|אפשר לדחות את הפגישה?|לדחות — to postpone
+Everyday|I have to cancel our plans.|אני חייב לבטל את התוכניות שלנו.|לבטל — to cancel
+Everyday|That sounds reasonable to me.|זה נשמע לי הגיוני.|הגיוני — reasonable
+Everyday|I can't concentrate right now.|אני לא מצליח להתרכז כרגע.|להתרכז — to concentrate
+Everyday|I hope everything works out.|אני מקווה שהכול יסתדר.|להסתדר — to work out
+Everyday|I don't want to interrupt you.|אני לא רוצה להפריע לך.|להפריע — to interrupt / disturb
+Everyday|I'm willing to give it a try.|אני מוכן לנסות.|מוכן — willing / ready
+Everyday|I haven't had a chance to read it.|עוד לא יצא לי לקרוא את זה.|יצא לי — I got a chance
+Everyday|I need to get some rest.|אני צריך לנוח קצת.|לנוח — to rest
+Everyday|I wonder what happened.|אני תוהה מה קרה.|לתהות — to wonder
+Everyday|I would rather not discuss it.|אני מעדיף לא לדבר על זה.|לדבר על — to discuss
+Connectors|In addition, we have another problem.|בנוסף, יש לנו בעיה נוספת.|בנוסף — in addition
+Connectors|Nevertheless, I think it's worthwhile.|ובכל זאת, אני חושב שזה כדאי.|ובכל זאת — nevertheless
+Connectors|As far as I know, he's coming.|עד כמה שידוע לי, הוא מגיע.|עד כמה שידוע לי — as far as I know
+Connectors|As long as you're here, everything is fine.|כל עוד אתה כאן, הכול בסדר.|כל עוד — as long as
+Connectors|Instead of waiting, let's begin.|במקום לחכות, בוא נתחיל.|במקום — instead of
+Connectors|Because of the rain, we stayed home.|בגלל הגשם נשארנו בבית.|בגלל — because of
+Connectors|Therefore, we changed our plans.|לכן שינינו את התוכניות שלנו.|לכן — therefore
+Connectors|Although it's expensive, it's worth it.|אף על פי שזה יקר, זה שווה את זה.|אף על פי ש — although
+Connectors|In case of a problem, call me.|במקרה של בעיה, תתקשר אליי.|במקרה של — in case of
+Connectors|The sooner we start, the better.|ככל שנתחיל מוקדם יותר, כך ייטב.|ככל ש... כך — the more... the more
+Connectors|At least we tried.|לפחות ניסינו.|לפחות — at least
+Connectors|In any case, I'll be there.|בכל מקרה, אני אהיה שם.|בכל מקרה — in any case
+Connectors|For example, look at this.|למשל, תסתכל על זה.|למשל — for example
+Connectors|On the other hand, it's risky.|מצד שני, זה מסוכן.|מצד שני — on the other hand
+Connectors|Meanwhile, we can prepare.|בינתיים, אנחנו יכולים להתכונן.|בינתיים — meanwhile
+Israel life|Where is the nearest bus stop?|איפה תחנת האוטובוס הקרובה ביותר?|תחנה — station / stop
+Israel life|I'd like to schedule an appointment.|אני רוצה לקבוע תור.|לקבוע תור — schedule an appointment
+Israel life|Is the apartment available for rent?|הדירה פנויה להשכרה?|השכרה — rental
+Israel life|Does the price include electricity?|המחיר כולל חשמל?|לכלול — to include
+Israel life|When does the lease expire?|מתי חוזה השכירות מסתיים?|חוזה שכירות — lease
+Israel life|I need to open a bank account.|אני צריך לפתוח חשבון בנק.|חשבון בנק — bank account
+Israel life|Can I pay in installments?|אפשר לשלם בתשלומים?|תשלומים — installments
+Israel life|Where do I submit the application?|איפה מגישים את הבקשה?|להגיש — to submit
+Israel life|What documents are required?|אילו מסמכים נדרשים?|מסמכים — documents
+Israel life|I received a notice from the municipality.|קיבלתי הודעה מהעירייה.|עירייה — municipality
+Israel life|Is there a discount for residents?|יש הנחה לתושבים?|הנחה — discount
+Israel life|I need a referral to a specialist.|אני צריך הפניה לרופא מומחה.|הפניה — referral
+Israel life|How do I get to the train station?|איך מגיעים לתחנת הרכבת?|להגיע — to arrive / get to
+Israel life|The bus is running late.|האוטובוס מאחר.|לאחר — to be late
+Israel life|Could you send me the receipt?|אתה יכול לשלוח לי את הקבלה?|קבלה — receipt
+Israel life|I want to renew my ID card.|אני רוצה לחדש את תעודת הזהות שלי.|לחדש — to renew
+Israel life|The neighborhood is very quiet.|השכונה שקטה מאוד.|שכונה — neighborhood
+Israel life|Where can I pick up the package?|איפה אפשר לאסוף את החבילה?|לאסוף — to collect
+Israel life|I'm looking for a furnished apartment.|אני מחפש דירה מרוהטת.|מרוהט — furnished
+Israel life|Is there an additional fee?|יש עמלה נוספת?|עמלה — fee / commission
+Business|We exceeded our revenue forecast.|עברנו את תחזית ההכנסות שלנו.|תחזית — forecast
+Business|Profitability improved this quarter.|הרווחיות השתפרה ברבעון הזה.|רווחיות — profitability
+Business|We need to reduce expenses.|אנחנו צריכים לצמצם את ההוצאות.|לצמצם — to reduce
+Business|The company is raising capital.|החברה מגייסת הון.|לגייס הון — to raise capital
+Business|Let's assess the risks first.|בוא נעריך קודם את הסיכונים.|סיכון — risk
+Business|The acquisition was completed yesterday.|הרכישה הושלמה אתמול.|רכישה — acquisition
+Business|We haven't reached an agreement yet.|עדיין לא הגענו להסכמה.|הסכמה — agreement
+Business|The board approved the budget.|הדירקטוריון אישר את התקציב.|תקציב — budget
+Business|Demand increased significantly.|הביקוש עלה באופן משמעותי.|ביקוש — demand
+Business|We need to define our goals.|אנחנו צריכים להגדיר את היעדים שלנו.|יעד — target / goal
+Business|The company faces intense competition.|החברה מתמודדת עם תחרות קשה.|להתמודד — to cope / face
+Business|What is the expected return?|מה התשואה הצפויה?|תשואה — return
+Business|We are negotiating the terms.|אנחנו מנהלים משא ומתן על התנאים.|משא ומתן — negotiation
+Business|The figures are not accurate.|הנתונים אינם מדויקים.|נתונים — data / figures
+Business|We should examine the assumptions.|כדאי לבחון את ההנחות.|הנחה — assumption
+Business|We need to allocate resources efficiently.|אנחנו צריכים להקצות משאבים ביעילות.|להקצות — to allocate
+Business|The investment could create value.|ההשקעה עשויה ליצור ערך.|עשוי — may / likely to
+Business|Cash flow is more stable now.|תזרים המזומנים יציב יותר עכשיו.|תזרים מזומנים — cash flow
+Business|The deadline has been extended.|המועד האחרון הוארך.|להאריך — to extend
+Business|We need to make a strategic decision.|אנחנו צריכים לקבל החלטה אסטרטגית.|לקבל החלטה — to make a decision
+News|The government announced a new policy.|הממשלה הודיעה על מדיניות חדשה.|מדיניות — policy
+News|The proposal was rejected.|ההצעה נדחתה.|הצעה — proposal
+News|The two sides reached a compromise.|שני הצדדים הגיעו לפשרה.|פשרה — compromise
+News|The situation remains uncertain.|המצב עדיין לא ברור.|אי־ודאות — uncertainty
+News|The public expressed concern.|הציבור הביע דאגה.|להביע — to express
+News|The talks resumed this morning.|השיחות התחדשו הבוקר.|להתחדש — to resume
+News|The decision sparked criticism.|ההחלטה עוררה ביקורת.|לעורר — to provoke / arouse
+News|The report was published yesterday.|הדו״ח פורסם אתמול.|לפרסם — to publish
+News|There is a shortage of housing.|יש מחסור בדיור.|מחסור — shortage
+News|The cost of living keeps rising.|יוקר המחיה ממשיך לעלות.|יוקר המחיה — cost of living
+News|The government is facing pressure.|הממשלה עומדת בפני לחץ.|לחץ — pressure
+News|The law will take effect next month.|החוק ייכנס לתוקף בחודש הבא.|להיכנס לתוקף — take effect
+News|The survey shows a change in opinion.|הסקר מצביע על שינוי בדעת הקהל.|סקר — survey / poll
+News|The implications are far-reaching.|ההשלכות מרחיקות לכת.|השלכות — implications
+News|The parties disagree on this issue.|המפלגות חלוקות בנושא הזה.|חלוק — divided / in disagreement
+Jewish life|What time does Shabbat begin?|באיזו שעה נכנסת שבת?|כניסת שבת — start of Shabbat
+Jewish life|Is there a minyan nearby?|יש מניין בקרבת מקום?|בקרבת מקום — nearby
+Jewish life|Who supervises the kashrut here?|מי נותן כאן את ההכשר?|הכשר — kosher certification
+Jewish life|We are hosting guests for Shabbat.|אנחנו מארחים אורחים בשבת.|לארח — to host
+Jewish life|What is this week's Torah portion?|מה פרשת השבוע?|פרשת השבוע — weekly Torah portion
+Jewish life|I have a question about Jewish law.|יש לי שאלה בהלכה.|הלכה — Jewish law
+Jewish life|The lesson begins after the prayer service.|השיעור מתחיל אחרי התפילה.|שיעור — lesson
+Jewish life|We light candles before sunset.|אנחנו מדליקים נרות לפני השקיעה.|שקיעה — sunset
+Jewish life|What is the reason for this custom?|מה הטעם למנהג הזה?|מנהג — custom
+Jewish life|I would like to join the community.|אני רוצה להצטרף לקהילה.|להצטרף — to join
+Advanced|I tend to underestimate the difficulty.|אני נוטה להמעיט בערך הקושי.|לנטות — to tend
+Advanced|We need to distinguish between the two.|צריך להבחין בין השניים.|להבחין — to distinguish
+Advanced|I find it hard to express myself.|קשה לי להתבטא.|להתבטא — to express oneself
+Advanced|The outcome was beyond our expectations.|התוצאה הייתה מעבר לציפיות שלנו.|ציפיות — expectations
+Advanced|It is difficult to draw a conclusion.|קשה להסיק מסקנה.|להסיק — to infer
+Advanced|I changed my mind as a result.|שיניתי את דעתי בעקבות זאת.|בעקבות — following / as a result of
+Advanced|We must not ignore the consequences.|אסור לנו להתעלם מההשלכות.|להתעלם — to ignore
+Advanced|I don't take it for granted.|אני לא לוקח את זה כמובן מאליו.|מובן מאליו — taken for granted
+Advanced|It requires a lot of effort.|זה דורש הרבה מאמץ.|מאמץ — effort
+Advanced|I am aware of the limitations.|אני מודע למגבלות.|מגבלה — limitation
+Advanced|The benefits outweigh the costs.|התועלת עולה על העלויות.|תועלת — benefit
+Advanced|There is room for improvement.|יש מקום לשיפור.|שיפור — improvement
+Advanced|We should consider the circumstances.|כדאי להתחשב בנסיבות.|נסיבות — circumstances
+Advanced|I am struggling to keep up.|אני מתקשה לעמוד בקצב.|לעמוד בקצב — to keep up
+Advanced|This is a relatively common phenomenon.|זאת תופעה נפוצה יחסית.|תופעה — phenomenon
+`.trim();
+const cards=raw.split('\n').map((s,i)=>{let [cat,en,he,word]=s.split('|');return {id:i+1,cat,en,he,word}});const $=id=>document.getElementById(id);const day=86400000,key='ivrit-daily-v1';let state={},storageOK=true;try{state=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch(e){storageOK=false}let queue=[],current=null,shown=false,dir='en',done=0,initial=0,skipped=new Set();function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch(e){storageOK=false;$('notice').textContent='Browser storage is unavailable. Export your progress before closing.'}}function selected(){return cards.filter(c=>$('category').value==='All topics'||c.cat===$('category').value)}function isDue(c){return !state[c.id]||state[c.id].due<=Date.now()}function stats(){ $('total').textContent=cards.length;$('due').textContent=selected().filter(isDue).length;$('mastered').textContent=cards.filter(c=>(state[c.id]?.interval||0)>=21).length;$('progressText').textContent=`${Object.keys(state).length} of ${cards.length} sentences studied · ${Object.values(state).reduce((a,b)=>a+(b.reviews||0),0)} reviews completed.`}function start(){skipped.clear();done=0;queue=selected().filter(c=>$('mode').value==='all'||isDue(c)).sort((a,b)=>(state[a.id]?.due||0)-(state[b.id]?.due||0));initial=queue.length;next()}function next(){current=queue.shift()||null;shown=false;dir=$('direction').value==='mix'?(Math.random()<.5?'en':'he'):$('direction').value;render()}function intervals(){let n=state[current.id]?.interval||0;return [Math.max(1,Math.round(n*2)),Math.max(4,Math.round(n*3))]}function render(){stats();$('bar').style.width=(initial?Math.min(100,done/initial*100):100)+'%';$('counter').textContent=current?`${done} reviewed · ${queue.length+1} remaining`:'Session complete';$('front').textContent=current?current[dir]:'You’re all caught up!';$('front').classList.toggle('he',current&&dir==='he');$('prompt').textContent=current?(dir==='en'?'Translate into Hebrew':'Translate into English'):'יפה מאוד · Well done';$('hint').textContent=current?(shown?'Rate your recall below':'Tap to reveal · Space'):'Change study mode to practice more, or return when reviews are due.';$('answer').classList.toggle('hidden',!shown||!current);$('word').classList.toggle('hidden',!shown||!current);$('revealRow').classList.toggle('hidden',shown||!current);$('ratings').classList.toggle('hidden',!shown||!current);$('sound').disabled=!current;if(current){$('answer').textContent=current[dir==='en'?'he':'en'];$('answer').classList.toggle('he',dir==='en');$('word').textContent=current.word;let [g,e]=intervals();$('goodTime').textContent=g+' day'+(g===1?'':'s');$('easyTime').textContent=e+' days'}}function reveal(){if(current&&!shown){shown=true;render()}}function rate(r){if(!current||!shown)return;let [g,e]=intervals(),n=r===0?0:r===1?g:e;state[current.id]={interval:n,due:Date.now()+(r===0?60000:n*day),reviews:(state[current.id]?.reviews||0)+1};save();done++;next()}function skip(){if(!current)return;skipped.add(current.id);next()}function speak(){if(!current)return;let voices=window.speechSynthesis?.getVoices()||[],v=voices.find(x=>/^he[-_]/i.test(x.lang)||x.lang==='he');if(!v){$('notice').textContent='No Hebrew voice detected. Enable or install Hebrew text-to-speech on your device.';return}let u=new SpeechSynthesisUtterance(current.he);u.lang='he-IL';u.voice=v;u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u);$('notice').textContent=''}$('category').append(...['All topics',...new Set(cards.map(c=>c.cat))].map(t=>new Option(t,t)));['category','direction','mode'].forEach(id=>$(id).onchange=start);$('reveal').onclick=reveal;$('flash').onclick=reveal;$('flash').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();reveal()}};$('skip').onclick=skip;$('sound').onclick=speak;document.querySelectorAll('[data-rate]').forEach(b=>b.onclick=()=>rate(+b.dataset.rate));document.addEventListener('keydown',e=>{if($('study').classList.contains('hidden')||['INPUT','SELECT','BUTTON'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();reveal()}if(['1','2','3'].includes(e.key))rate(+e.key-1);if(e.key.toLowerCase()==='s')skip()});function library(){let q=$('search').value.toLowerCase();$('entries').replaceChildren(...cards.filter(c=>[c.en,c.he,c.word,c.cat].join(' ').toLowerCase().includes(q)).map(c=>{let d=document.createElement('div');d.className='listrow';for(let [cls,txt] of [['he',c.he],['',c.en],['muted',c.word+' · '+c.cat]]){let p=document.createElement('div');p.className=cls;p.textContent=txt;d.append(p)}return d}))}$('search').oninput=library;document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['study','library','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==b.dataset.tab));if(b.dataset.tab==='library')library();stats()});$('export').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,state})],{type:'application/json'}));a.download='ivrit-progress.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};$('import').onclick=()=>$('file').click();$('file').onchange=async()=>{try{let j=JSON.parse(await $('file').files[0].text());if(j.version!==1||!j.state||Array.isArray(j.state)||typeof j.state!=='object')throw Error();let clean={};for(let [id,v] of Object.entries(j.state)){if(!cards.some(c=>String(c.id)===id)||!v||![v.due,v.interval,v.reviews].every(Number.isFinite)||v.interval<0||v.reviews<0)throw Error();clean[id]=v}if(confirm('Replace this device’s progress with the backup?')){state=clean;save();start();alert('Progress imported.')}}catch(e){alert('Invalid progress backup.')}finally{$('file').value=''}};$('reset').onclick=()=>{if(confirm('Erase all review progress on this device?')){state={};save();start()}};start();if(!storageOK)$('notice').textContent='Local storage unavailable; export progress before closing.';
+</script></body></html>
